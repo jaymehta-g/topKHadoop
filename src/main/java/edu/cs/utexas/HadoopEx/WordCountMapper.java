@@ -7,7 +7,8 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
+
+public class WordCountMapper extends Mapper<Object, Text, Text, AirlineTuple> {
 
 	// Create a counter and initialize with 1
 	private final IntWritable counter = new IntWritable(1);
@@ -16,7 +17,15 @@ public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 
 	public void map(Object key, Text value, Context context) 
 			throws IOException, InterruptedException {
-		String name = value.toString().split(",")[7];
-		context.write(new Text(name), new IntWritable(1));
+		String[] line = value.toString().split(",");
+		String airline = line[4];
+		int delay;
+		try {
+			delay = Integer.parseInt(line[11]);
+		} catch (Exception e) {
+			return;
+		}
+
+		context.write(new Text(airline), new AirlineTuple(delay,1));
 	}
 }
