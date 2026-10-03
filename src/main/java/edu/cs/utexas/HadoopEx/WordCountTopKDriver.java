@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -44,10 +45,11 @@ public class WordCountTopKDriver extends Configured implements Tool {
 
 			// specify a Reducer
 			job.setReducerClass(WordCountReducer.class);
+			job.setCombinerClass(WordCountReducer.class);
 
 			// specify output types
 			job.setOutputKeyClass(Text.class);
-			job.setOutputValueClass(IntWritable.class);
+			job.setOutputValueClass(IntTuple.class);
 
 			// specify input and output directories
 			FileInputFormat.addInputPath(job, new Path(args[0]));
@@ -71,14 +73,14 @@ public class WordCountTopKDriver extends Configured implements Tool {
 
 			// specify output types
 			job2.setOutputKeyClass(Text.class);
-			job2.setOutputValueClass(IntWritable.class);
+			job2.setOutputValueClass(FloatWritable.class);
 
 			// set the number of reducer to 1
 			job2.setNumReduceTasks(1);
 
 			// specify input and output directories
 			FileInputFormat.addInputPath(job2, new Path(args[1]));
-			job2.setInputFormatClass(KeyValueTextInputFormat.class);
+			job2.setInputFormatClass(TextInputFormat.class);
 
 			FileOutputFormat.setOutputPath(job2, new Path(args[2]));
 			job2.setOutputFormatClass(TextOutputFormat.class);
