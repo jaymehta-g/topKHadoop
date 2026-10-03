@@ -20,7 +20,8 @@ Input file:  Book-Tiny.txt
 Specify your own Output directory like 
 
 # Running:
-
+![alt text](image.png)
+![alt text](image-1.png)
 
 
 
